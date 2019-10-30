@@ -2,7 +2,8 @@ import ast
 import logging
 import sys
 from collections import defaultdict
-from r2c_flake8_requests.import_aliasing import MethodVisitor
+
+from flake8_flask.import_aliasing import MethodVisitor
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)

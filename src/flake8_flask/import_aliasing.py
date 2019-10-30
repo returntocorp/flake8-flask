@@ -15,7 +15,7 @@ class MethodVisitor(ast.NodeVisitor):
 
     def method_names(self) -> Set[str]:
         """Put all method names you're interested in here"""
-        return set()
+        return set("send_file")
 
     def visit_Import(self, node: ast.Import) -> None:
         """

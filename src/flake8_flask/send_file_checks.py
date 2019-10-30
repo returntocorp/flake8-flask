@@ -2,8 +2,7 @@ import ast
 import logging
 import sys
 
-from r2c_flake8_requests.requests_base_visitor import RequestsBaseVisitor
-from r2c_flake8_requests.constants import REQUESTS_API_HTTP_VERBS, REQUESTS_API_TOP_LEVEL
+from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -11,16 +10,16 @@ handler = logging.StreamHandler(stream=sys.stderr)
 handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 logger.addHandler(handler)
 
-class UseTimeout(object):
+class SendFileChecks(object):
     name = "UseTimeout"
     version = "0.0.1"
-    code = "R2C702"
+    code = "R2C202"
 
     def __init__(self, tree):
         self.tree = tree
 
     def run(self):
-        visitor = UseTimeoutVisitor()
+        visitor = FlaskBaseVisitor()
         visitor.visit(self.tree)
 
         for report in visitor.report_nodes:
@@ -35,7 +34,7 @@ class UseTimeout(object):
     def _message_for(self):
         return f"{self.code} use a timeout; requests will hang forever without a timeout (recommended 60 sec)"
 
-class UseTimeoutVisitor(RequestsBaseVisitor):
+class SendFileChecksVisitor(FlaskBaseVisitor):
  
     def visit_Call(self, call_node):
         logger.debug(f"Visiting Call node: {ast.dump(call_node)}")
@@ -45,15 +44,20 @@ class UseTimeoutVisitor(RequestsBaseVisitor):
 
         fxn_name = self._get_function_name(call_node)
         logger.debug(f"Found function name: {fxn_name}")
-        if fxn_name not in set(list(REQUESTS_API_HTTP_VERBS) + list(REQUESTS_API_TOP_LEVEL)):
-            logger.debug("Function is not one of the requests API call")
-            return
         if not self.is_method(call_node, fxn_name):
-            logger.debug("Call node is not a requests API call")
+            logger.debug("Call node is not a flask API call")
+            return
+
+        arg0 = call_node.args[0]
+        if isinstance(arg0, ast.Str):
+            logger.debug("Call to send_file is a string, so s'all good man.")
             return
 
         keywords = call_node.keywords
-        if any([kw.arg == "timeout" for kw in keywords]):
+        if any([kw.arg == "mime_type" for kw in keywords]):
+            logger.debug("requests call has the 'timeout' keyword, so we're good")
+            return
+        if any([kw.arg == "attachment_filename" for kw in keywords]):
             logger.debug("requests call has the 'timeout' keyword, so we're good")
             return
 
@@ -75,7 +79,16 @@ if __name__ == "__main__":
 
     logger.info(f"Parsing {args.inputfile}")
     with open(args.inputfile, 'r') as fin:
-        tree = ast.parse(fin.read())
+        data = fin.read()
+    tree = ast.parse(data)
+    lines = data.split('\n')
 
-    visitor = UseTimeoutVisitor()
+    visitor = SendFileChecksVisitor()
     visitor.visit(tree)
+    for report in visitor.report_nodes:
+        node = report['node']
+        print(
+            node.lineno,
+            node.col_offset,
+            lines[node.lineno-1]
+        )
