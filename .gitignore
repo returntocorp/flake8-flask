@@ -1,1 +1,12 @@
-__pycache__
+*.egg-info/
+dist/
+build/
+__pycache__/
+tests/__pycache__/
+# mypy
+.mypy*
+
+#venv
+.venv
+# Ignore bento tool run paths (this line added by `bento init`)
+.bento/
