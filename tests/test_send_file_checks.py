@@ -128,6 +128,21 @@ send_file(filename)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+def test_branch_string_variable_resolution():
+    code = """
+from flask import send_file
+cond = True
+if cond:
+    filename = "/tmp/file.txt"
+else:
+    filename = "file.txt"
+send_file(filename)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
 def test_os_path_join():
     code = """
 import flask, os
