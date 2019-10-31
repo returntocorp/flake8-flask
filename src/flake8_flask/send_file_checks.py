@@ -52,6 +52,11 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
         if isinstance(arg0, ast.Str):
             logger.debug("Call to send_file is a string, so s'all good man.")
             return
+        elif isinstance(arg0, ast.Name):
+            variable_assigment_nodes = self.get_symbol_value_nodes(arg0.id)
+            if all([isinstance(node, ast.Str) for node in variable_assigment_nodes]):
+                logger.debug("Call to send_file is a string, so s'all good man.")
+                return
 
         keywords = call_node.keywords
         if any([kw.arg == "mimetype" for kw in keywords]):

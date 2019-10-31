@@ -48,6 +48,9 @@ class DumbScopeVisitor(MethodVisitor):
     def _set_symbol(self, symbol, value_node):
         self.symbol_table[self.scope][symbol].append(value_node)
 
+    def get_symbol_value_nodes(self, symbol):
+        return self.symbol_table[self.scope][symbol]
+
     def _set_scope(self, scope):
         self.scope = scope
         self.symbol_table[self.scope] = defaultdict(list)
