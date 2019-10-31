@@ -54,7 +54,7 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             return
 
         keywords = call_node.keywords
-        if any([kw.arg == "mime_type" for kw in keywords]):
+        if any([kw.arg == "mimetype" for kw in keywords]):
             logger.debug("requests call has the 'timeout' keyword, so we're good")
             return
         if any([kw.arg == "attachment_filename" for kw in keywords]):
@@ -85,6 +85,7 @@ if __name__ == "__main__":
 
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
+    print("*** Hits:")
     for report in visitor.report_nodes:
         node = report['node']
         print(
