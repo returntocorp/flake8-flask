@@ -35,6 +35,18 @@ class SendFileChecks(object):
         return f"{self.code} use a timeout; requests will hang forever without a timeout (recommended 60 sec)"
 
 class SendFileChecksVisitor(FlaskBaseVisitor):
+
+    def _is_os_path_join(self, call_node):
+        # This makes me sad but it'll work.
+        if isinstance(call_node.func, ast.Attribute) \
+            and isinstance(call_node.func.value, ast.Attribute) \
+            and isinstance(call_node.func.value.value, ast.Name):
+            return (
+                call_node.func.value.value.id == "os" \
+                    and call_node.func.value.attr == "path" \
+                    and call_node.func.attr == "join"
+            )
+
  
     def visit_Call(self, call_node):
         logger.debug(f"Visiting Call node: {ast.dump(call_node)}")
@@ -56,6 +68,10 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             variable_assigment_nodes = self.get_symbol_value_nodes(arg0.id)
             if all([isinstance(node, ast.Str) for node in variable_assigment_nodes]):
                 logger.debug("Call to send_file is a string, so s'all good man.")
+                return
+        elif isinstance(arg0, ast.Call):
+            if self._is_os_path_join(arg0):
+                logger.debug("arg0 is os.path.join() so assuming it's good")
                 return
 
         keywords = call_node.keywords
