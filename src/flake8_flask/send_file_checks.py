@@ -11,7 +11,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s -
 logger.addHandler(handler)
 
 class SendFileChecks(object):
-    name = "UseTimeout"
+    name = "SendFileChecks"
     version = "0.0.1"
     code = "R2C202"
 
@@ -32,7 +32,7 @@ class SendFileChecks(object):
             )
 
     def _message_for(self):
-        return f"{self.code} use a timeout; requests will hang forever without a timeout (recommended 60 sec)"
+        return f"{self.code} passing a file-like object to send_file without a mimetype or attachment_filename will raise a ValueError"
 
 class SendFileChecksVisitor(FlaskBaseVisitor):
 
