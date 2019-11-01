@@ -60,6 +60,29 @@ send_file(fin, conditional=False)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+# Import aliasing
+def test_import_aliasing():
+    code = """
+import flask as fl
+fin = open("file.txt", 'r')
+fl.send_file(fin)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 1
+
+def test_function_import_aliasing():
+    code = """
+from flask import send_file as sf
+fin = open("file.txt", 'r')
+sf(fin)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 1
+
 
 ## SHOULD NOT ALERT
 # Has a mimetype
@@ -152,4 +175,3 @@ flask.send_file(os.path.join("data", "file.txt"))
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
-
