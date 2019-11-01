@@ -13,7 +13,7 @@ setuptools.setup(
     packages=['flake8_flask'],
     entry_points={
         'flake8.extension': [
-            'R2C202=flake8_flask.send_file_check:SendFileCheck',
+            'R2C202=flake8_flask.send_file_checks:SendFileChecks',
         ],
     },
     classifiers=[
