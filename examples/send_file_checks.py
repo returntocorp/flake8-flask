@@ -28,6 +28,15 @@ def example5():
     print("random statement")
     send_file(fin, conditional=False)
 
+# Import aliasing
+def module_alias():
+    import flask as fl
+    fl.send_file(open("foo.txt"))
+
+def method_alias():
+    from flask import send_file as sf
+    sf(open("foo.txt"))
+
 ## SHOULD NOT ALERT
 
 # Has a mimetype
