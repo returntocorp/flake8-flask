@@ -19,7 +19,7 @@ class SendFileChecks(object):
         self.tree = tree
 
     def run(self):
-        visitor = FlaskBaseVisitor()
+        visitor = SendFileChecksVisitor()
         visitor.visit(self.tree)
 
         for report in visitor.report_nodes:
