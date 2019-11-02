@@ -4,7 +4,7 @@ requires = ["flake8 > 3.6.0"]
 
 setuptools.setup(
     name='flake8_flask',
-    version='0.0.3',
+    version='0.0.4',
     description='r2c checks for flask',
     author='grayson',
     author_email='grayson@r2c.dev',
