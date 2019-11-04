@@ -234,3 +234,38 @@ def pdf(invoice_id):
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
+def test_string_bin_op():
+    # https://github.com/borevitzlab/spc-eyepi/blob/a5f697c7b7302de088bff0dc834e33604665830b/webinterface.py#L336
+    code = """
+from flask import send_file
+return send_file("static/temp/" + str(serialnumber) + ".jpg")
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_unknown_object():
+    # https://github.com/Eierkopp/triparchive/blob/7b5333084ba40263bfcf26aecca6ee8ad4b9c781/triptools/photoserve.py#L140
+    code = """
+from flask import send_file
+def sendimg(id):
+    photo = db.get_photo(id)
+    return send_file(photo.filename)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_list_index():
+    code = """
+from flask import send_file
+l = [open("file.txt", 'rb')]
+send_file(l[0])
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
