@@ -52,6 +52,16 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             if call_node.func.attr == "format" and isinstance(call_node.func.value, ast.Str):
                 return True
         return False
+
+    def _is_open(self, node):
+        if isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name) and node.func.id == "open":
+                return True
+        return False
+
+    def _is_name_node_open(self, name_node):
+        variable_assigment_nodes = self.get_symbol_value_nodes(name_node.id)
+        return any( [self._is_open(node) for node in variable_assigment_nodes] )
  
     def visit_Call(self, call_node):
         logger.debug(f"Visiting Call node: {ast.dump(call_node)}")
@@ -70,16 +80,12 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             logger.debug("Call to send_file is a string, so s'all good man.")
             return
         elif isinstance(arg0, ast.Name):
-            variable_assigment_nodes = self.get_symbol_value_nodes(arg0.id)
-            if all([isinstance(node, ast.Str) for node in variable_assigment_nodes]):
-                logger.debug("Call to send_file is a string, so s'all good man.")
+            if not self._is_name_node_open(arg0):
+                logger.debug("Variable dosn't resolve to open(...), so assuming we're good")
                 return
         elif isinstance(arg0, ast.Call):
-            if self._is_os_path_join(arg0):
-                logger.debug("arg0 is os.path.join() so assuming it's good")
-                return
-            elif self._is_format_string(arg0):
-                logger.debug("arg0 looks like a format string; assuming all good here")
+            if not self._is_open(arg0):
+                logger.debug("arg0 is not open(...), so don't care")
                 return
 
         keywords = call_node.keywords

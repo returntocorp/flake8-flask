@@ -84,6 +84,16 @@ sf(fin)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+def test_conditional_where_could_be_file_like():
+    code = """
+import flask
+cond = True
+if cond:
+    f = open("file.txt")
+else:
+    f = "file.txt"
+flask.send_file(f)
+"""
 
 ## SHOULD NOT ALERT
 # Has a mimetype
