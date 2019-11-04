@@ -87,6 +87,10 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             if not self._is_open(arg0):
                 logger.debug("arg0 is not open(...), so don't care")
                 return
+        else:
+            # This means arg0 is some other node type besides Call or Name, which isn't supported yet.
+            logger.debug("arg0 is not Call or Name node, so we're bailing out.")
+            return
 
         keywords = call_node.keywords
         if any([kw.arg == "mimetype" for kw in keywords]):
