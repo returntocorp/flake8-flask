@@ -72,6 +72,7 @@ fl.send_file(fin)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+
 def test_function_import_aliasing():
     code = """
 from flask import send_file as sf
@@ -170,6 +171,54 @@ def test_os_path_join():
     code = """
 import flask, os
 flask.send_file(os.path.join("data", "file.txt"))
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_unknown_function():
+    code = """
+import flask
+flask.send_file("file.txt".replace("txt", "csv"))
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_string_returned_from_some_function():
+    code = """
+import flask, tempfile
+fout, abspath = tempfile.mkstemp()
+fout.write("blah")
+fout.close()
+flask.send_file(abspath)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_string_returned_from_some_function_inline():
+    code = """
+import flask
+def fxn():
+    return open("file.txt", 'rb')
+flask.send_file(fxn())
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_format_string():
+    # https://github.com/Tethik/faktura/blob/a2ffa7d93d9b4afbaafe02e5ae65c5e3541fd969/faktura/invoice.py#L61
+    code = """
+import flask
+def pdf(invoice_id): 
+    pdfdir = app.config["PDF_DIRECTORY"]
+    return send_file('{}/{}.pdf'.format(pdfdir, invoice_id))
 """
     tree = ast.parse(code)
     visitor = SendFileChecksVisitor()

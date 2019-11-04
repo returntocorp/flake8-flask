@@ -47,6 +47,11 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
                     and call_node.func.attr == "join"
             )
 
+    def _is_format_string(self, call_node):
+        if isinstance(call_node.func, ast.Attribute):
+            if call_node.func.attr == "format" and isinstance(call_node.func.value, ast.Str):
+                return True
+        return False
  
     def visit_Call(self, call_node):
         logger.debug(f"Visiting Call node: {ast.dump(call_node)}")
@@ -72,6 +77,9 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
         elif isinstance(arg0, ast.Call):
             if self._is_os_path_join(arg0):
                 logger.debug("arg0 is os.path.join() so assuming it's good")
+                return
+            elif self._is_format_string(arg0):
+                logger.debug("arg0 looks like a format string; assuming all good here")
                 return
 
         keywords = call_node.keywords
