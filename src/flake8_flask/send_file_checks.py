@@ -12,7 +12,7 @@ logger.addHandler(handler)
 
 class SendFileChecks(object):
     name = "SendFileChecks"
-    version = "0.0.1"
+    version = "0.0.5"
     code = "R2C202"
 
     def __init__(self, tree):
