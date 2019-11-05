@@ -72,7 +72,6 @@ fl.send_file(fin)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
-
 def test_function_import_aliasing():
     code = """
 from flask import send_file as sf
@@ -94,6 +93,10 @@ else:
     f = "file.txt"
 flask.send_file(f)
 """
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 1
 
 ## SHOULD NOT ALERT
 # Has a mimetype
@@ -264,6 +267,30 @@ def test_list_index():
 from flask import send_file
 l = [open("file.txt", 'rb')]
 send_file(l[0])
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+def test_string_io():
+    code = """
+import flask
+f = StringIO('Test')
+rv = flask.send_file(f)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
+
+# Currently, this is a false-negative case.
+# I'd like to support it in the future.
+def test_with_open():
+    code = """
+import flask
+with open('file.txt', 'rb') as fin:
+    flask.send_file(fin)
 """
     tree = ast.parse(code)
     visitor = SendFileChecksVisitor()
