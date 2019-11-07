@@ -97,3 +97,35 @@ def use_cookie(cookie):
     visitor = SecureSetCookiesVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
+
+# non-Flask set-cookie
+@pytest.mark.true_negative
+def test_non_flask_set_cookie():
+    # https://github.com/cruzegoodin/TSC-ShippingDetails/blob/cceee79014623c5ac8fb042b8301a427743627d6/venv/lib/python2.7/site-packages/pip/_vendor/requests/cookies.py#L306
+    code = """
+import copy
+import time
+import collections
+from .compat import cookielib, urlparse, urlunparse, Morsel
+
+def merge_cookies(cookiejar, cookies):
+    if not isinstance(cookiejar, cookielib.CookieJar):
+        raise ValueError('You can only merge into CookieJar')
+
+    if isinstance(cookies, dict):
+        cookiejar = cookiejar_from_dict(
+            cookies, cookiejar=cookiejar, overwrite=False)
+    elif isinstance(cookies, cookielib.CookieJar):
+        try:
+            cookiejar.update(cookies)
+        except AttributeError:
+            for cookie_in_jar in cookies:
+                cookiejar.set_cookie(cookie_in_jar)
+
+    return cookiejar
+"""
+    tree = ast.parse(code)
+    visitor = SecureSetCookiesVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
