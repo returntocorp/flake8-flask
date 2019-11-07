@@ -20,7 +20,7 @@ class SecureSetCookies:
 
     def run(self):
         visitor = SecureSetCookiesVisitor()
-        visitor.visit(tree)
+        visitor.visit(self.tree)
 
         for report in visitor.report_nodes:
             node = report["node"]
