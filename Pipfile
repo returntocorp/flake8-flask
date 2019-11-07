@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 black = "*"
+bento-cli = "*"
 
 [packages]
 flake8 = "<4.0.0,>=3.6.0"
