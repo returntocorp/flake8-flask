@@ -2,13 +2,12 @@ import ast
 import logging
 import sys
 from flake8_flask.flask_base_visitor import FlaskBaseVisitor
+from flake8_flask.constants import MODULE_NAME
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-)
+handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 logger.addHandler(handler)
 
 
@@ -34,21 +33,20 @@ class SecureSetCookies:
             )
 
     def _message_for(self):
-        return f"{self.code} Cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax'.  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None."
+        return f"{self.code} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax'.  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None."
 
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
     def _is_set_cookie(self, call_node):
-        if (
-            isinstance(call_node.func, ast.Attribute)
-            and call_node.func.attr == "set_cookie"
-            and self.is_method(call_node, "set_cookie")
-        ):
+        if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
             return True
         return False
 
     def visit_Call(self, call_node):
         # If Flask is imported
+        if not self.is_imported(MODULE_NAME):
+            logger.debug("Flask is not imported, any calls to set_cookie probably aren't flask")
+            return
 
         # and if set_cookie
         if not self._is_set_cookie(call_node):

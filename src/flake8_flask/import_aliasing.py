@@ -12,6 +12,7 @@ class MethodVisitor(ast.NodeVisitor):
     def __init__(self):
         self.module_alias: str = MODULE_NAME
         self.aliases: Dict[str, str] = {}
+        self.module_imports: List[str] = []
         super(MethodVisitor, self).__init__()
 
     def method_names(self) -> Set[str]:
@@ -25,6 +26,7 @@ class MethodVisitor(ast.NodeVisitor):
             import click as alias
         """
         for n in node.names:
+            self.module_imports.append(n)
             if n.name == self.module_alias:
                 self.module_alias = n.asname or n.name
 
@@ -37,8 +39,12 @@ class MethodVisitor(ast.NodeVisitor):
         """
         if node.module == self.module_alias:
             for n in node.names:
+                self.module_imports.append(n)
                 if n.name in self.method_names():
                     self.aliases[n.name] = n.asname or n.name
+
+    def is_imported(self, module_name: str):
+        return module_name in self.module_imports
 
     def is_method(self, node: ast.Call, name: str):
         if isinstance(node.func, ast.Attribute):
