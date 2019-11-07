@@ -26,7 +26,7 @@ class MethodVisitor(ast.NodeVisitor):
             import click as alias
         """
         for n in node.names:
-            self.module_imports.append(n)
+            self.module_imports.append(n.name)
             if n.name == self.module_alias:
                 self.module_alias = n.asname or n.name
 
@@ -39,7 +39,7 @@ class MethodVisitor(ast.NodeVisitor):
         """
         if node.module == self.module_alias:
             for n in node.names:
-                self.module_imports.append(n)
+                self.module_imports.append(n.name)
                 if n.name in self.method_names():
                     self.aliases[n.name] = n.asname or n.name
 
