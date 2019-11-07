@@ -15,6 +15,7 @@ flask.send_file(open("file.txt", 'r'))
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+
 # With keyword args
 @pytest.mark.true_positive
 def test_with_kwargs():
@@ -26,6 +27,7 @@ flask.send_file(open("file.txt", 'r'), conditional=False)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
+
 
 # from flask import send_file case
 @pytest.mark.true_positive
@@ -39,6 +41,7 @@ send_file(open("file.txt", 'r'))
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+
 # Variable resolution
 @pytest.mark.true_positive
 def test_variable_resolution():
@@ -51,6 +54,7 @@ send_file(fin)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
+
 
 # Variable resolution with other statements
 @pytest.mark.true_positive
@@ -66,6 +70,7 @@ send_file(fin, conditional=False)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+
 # Import aliasing
 @pytest.mark.true_positive
 def test_import_aliasing():
@@ -79,6 +84,7 @@ fl.send_file(fin)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
 
+
 @pytest.mark.true_positive
 def test_function_import_aliasing():
     code = """
@@ -90,6 +96,7 @@ sf(fin)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 1
+
 
 @pytest.mark.true_positive
 def test_conditional_where_could_be_file_like():
@@ -120,6 +127,7 @@ flask.send_file(open("file.txt", 'r'), mimetype="text/plain")
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.true_negative
 def test_mimetype_kwarg_with_others():
     code = """
@@ -130,6 +138,7 @@ flask.send_file(open("file.txt", 'r'), mimetype="text/plain", conditional=False)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 # Has a attachment_filename
 @pytest.mark.true_negative
@@ -144,6 +153,7 @@ send_file(fin, as_attachment=True, attachment_filename="file.txt")
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.true_negative
 def test_attachment_filename_kwarg_with_others():
     code = """
@@ -155,6 +165,7 @@ send_file(fin, as_attachment=True, attachment_filename="file.txt", conditional=F
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 # String argument for arg0
 @pytest.mark.true_negative
@@ -168,6 +179,7 @@ flask.send_file("/tmp/file.txt")
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.true_negative
 def test_string_variable_resolution():
     code = """
@@ -179,6 +191,7 @@ send_file(filename)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 @pytest.mark.true_negative
 def test_branch_string_variable_resolution():
@@ -196,6 +209,7 @@ send_file(filename)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.true_negative
 def test_os_path_join():
     code = """
@@ -207,6 +221,7 @@ flask.send_file(os.path.join("data", "file.txt"))
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.false_negative
 def test_unknown_function():
     code = """
@@ -217,6 +232,7 @@ flask.send_file("file.txt".replace("txt", "csv"))
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 @pytest.mark.false_negative
 def test_string_returned_from_some_function():
@@ -232,6 +248,7 @@ flask.send_file(abspath)
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.false_negative
 def test_string_returned_from_some_function_inline():
     code = """
@@ -245,6 +262,7 @@ flask.send_file(fxn())
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.false_negative
 def test_string_bin_op():
     # https://github.com/borevitzlab/spc-eyepi/blob/a5f697c7b7302de088bff0dc834e33604665830b/webinterface.py#L336
@@ -256,6 +274,7 @@ return send_file("static/temp/" + str(serialnumber) + ".jpg")
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 @pytest.mark.false_negative
 def test_unknown_object():
@@ -270,6 +289,7 @@ def sendimg(id):
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 @pytest.mark.true_negative
 def test_format_string():
@@ -298,6 +318,7 @@ send_file(l[0])
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
+
 @pytest.mark.false_negative
 def test_string_io():
     code = """
@@ -309,6 +330,7 @@ rv = flask.send_file(f)
     visitor = SendFileChecksVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
+
 
 # Currently, this is a false-negative case.
 # I'd like to support it in the future.
