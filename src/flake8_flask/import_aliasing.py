@@ -3,6 +3,7 @@ from typing import Set, Dict, List
 
 from flake8_flask.constants import MODULE_NAME
 
+
 class MethodVisitor(ast.NodeVisitor):
     """
     Abstract visitor that tracks call sites across import aliasing

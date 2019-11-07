@@ -8,8 +8,11 @@ from flake8_flask.import_aliasing import MethodVisitor
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(handler)
+
 
 class DumbScopeVisitor(MethodVisitor):
     def __init__(self):
@@ -24,7 +27,9 @@ class DumbScopeVisitor(MethodVisitor):
         try:
             val = self.symbol_table[self.scope][symbol]
         except KeyError:
-            logger.debug(f"{symbol} not in scope[{self.scope}] symbol table. Case not handled yet")
+            logger.debug(
+                f"{symbol} not in scope[{self.scope}] symbol table. Case not handled yet"
+            )
             return None
 
         if isinstance(val, ast.Name):
@@ -36,14 +41,21 @@ class DumbScopeVisitor(MethodVisitor):
             return value.s
         elif isinstance(value, ast.Num):
             return value.n
-        else: #TODO handle more cases
+        else:  # TODO handle more cases
             return None
 
     def _get_possible_symbol_values(self, symbol):
-        return [self._get_symbol_value(sym) for sym in self.symbol_table[self.scope][symbol]]
+        return [
+            self._get_symbol_value(sym) for sym in self.symbol_table[self.scope][symbol]
+        ]
 
     def _symbol_could_be_value(self, symbol, value):
-        return any( [self._get_symbol_value(sym) == value for sym in self.symbol_table[self.scope][symbol]] )
+        return any(
+            [
+                self._get_symbol_value(sym) == value
+                for sym in self.symbol_table[self.scope][symbol]
+            ]
+        )
 
     def _set_symbol(self, symbol, value_node):
         self.symbol_table[self.scope][symbol].append(value_node)
@@ -54,7 +66,7 @@ class DumbScopeVisitor(MethodVisitor):
     def _set_scope(self, scope):
         self.scope = scope
         self.symbol_table[self.scope] = defaultdict(list)
- 
+
     def visit_FunctionDef(self, def_node):
         logger.debug("Visiting FunctionDef node")
         self._set_scope(def_node.name)
@@ -79,11 +91,12 @@ class DumbScopeVisitor(MethodVisitor):
             if isinstance(target.ctx, ast.Store):
                 for i, elem in enumerate(target.elts):
                     if not isinstance(elem, ast.Name):
-                        continue # TODO: need to figure out alternative cases
+                        continue  # TODO: need to figure out alternative cases
                     if isinstance(assign_node.value, ast.Tuple):
                         self._set_symbol(elem.id, assign_node.value.elts[i])
 
         self.visit(assign_node.value)
+
 
 if __name__ == "__main__":
     import argparse
@@ -97,7 +110,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logger.info(f"Parsing {args.inputfile}")
-    with open(args.inputfile, 'r') as fin:
+    with open(args.inputfile, "r") as fin:
         tree = ast.parse(fin.read())
 
     visitor = DumbScopeVisitor()

@@ -6,7 +6,9 @@ from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(handler)
 
 
@@ -89,4 +91,3 @@ if __name__ == "__main__":
     for report in visitor.report_nodes:
         node = report["node"]
         print(node.lineno, node.col_offset, lines[node.lineno - 1])
-
