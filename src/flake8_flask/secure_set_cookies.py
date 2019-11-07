@@ -37,7 +37,11 @@ class SecureSetCookies:
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
     def _is_set_cookie(self, call_node):
-        if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
+        if (
+            isinstance(call_node.func, ast.Attribute)
+            and call_node.func.attr == "set_cookie"
+            and self.is_method(call_node, "set_cookie")
+        ):
             return True
         return False
 
