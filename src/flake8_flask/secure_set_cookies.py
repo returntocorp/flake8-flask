@@ -12,7 +12,7 @@ logger.addHandler(handler)
 
 class SecureSetCookies:
     name = "SecureSetCookies"
-    version = "0.0.1"
+    version = "0.0.2"
     code = "R2C203"
 
     def __init__(self, tree):
