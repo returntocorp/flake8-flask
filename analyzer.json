@@ -1,6 +1,6 @@
 {
   "analyzer_name": "r2c/flask-flake8",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "spec_version": "1.2.0",
   "dependencies": {
     "public/source-code": "*"

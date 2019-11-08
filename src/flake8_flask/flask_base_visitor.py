@@ -1,8 +1,8 @@
 import ast
 from flake8_flask.dumb_scope_visitor import DumbScopeVisitor
 
-class FlaskBaseVisitor(DumbScopeVisitor):
 
+class FlaskBaseVisitor(DumbScopeVisitor):
     def __init__(self):
         super(FlaskBaseVisitor, self).__init__()
 
