@@ -7,7 +7,7 @@ import sys
 
 def make_results(json, base_path):
     output = []
-    for url, findings in json.items():
+    for _, findings in json.items():
         if len(findings) == 0:
             continue
         """
