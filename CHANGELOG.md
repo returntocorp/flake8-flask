@@ -1,3 +1,7 @@
+# 0.1.0
+
+- release to pypi (https://pypi.org/project/flake8-flask/)
+
 # 0.0.9
 
 - bugfixes for set_cookie check
