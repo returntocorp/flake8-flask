@@ -32,7 +32,7 @@ class TalismanChecks(object):
         self.visitor.visit(self.tree)
 
         reports = []
-        if self.visitor._flask_initialized and not self.visitor._talimans_initialized:
+        if self.visitor._flask_initialized and not self.visitor._talisman_initialized:
             reports = self.visitor.report_nodes
 
         for report in reports:
@@ -50,7 +50,7 @@ class TalismanChecks(object):
 
 class TalismanChecksVisitor(FlaskBaseVisitor):
     def __init__(self):
-        self._talimans_initialized = False
+        self._talisman_initialized = False
         self._flask_initialized = False
         super(TalismanChecksVisitor, self).__init__()
 
@@ -69,7 +69,7 @@ class TalismanChecksVisitor(FlaskBaseVisitor):
             logger.debug(f"Found this node: {ast.dump(call_node)}")
             self.report_nodes.append({"node": call_node})
         elif fxn_name == FUNCTION_NAME:
-            self._talimans_initialized = True
+            self._talisman_initialized = True
 
 
 if __name__ == "__main__":
