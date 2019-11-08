@@ -32,7 +32,7 @@ class TalismanChecks(object):
         self.visitor.visit(self.tree)
 
         reports = []
-        if self.visitor._flask_initialized and not self.visitor._talisman_initialized:
+        if self.visitor.is_imported(FLASK_NAME) and self.visitor._flask_initialized and not self.visitor._talisman_initialized:
             reports = self.visitor.report_nodes
 
         for report in reports:
