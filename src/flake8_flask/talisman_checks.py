@@ -22,7 +22,7 @@ FLASK_FUNCTION_NAME = "Flask"
 class TalismanChecks(object):
     name = "TalismanChecks"
     version = "0.0.1"
-    code = "R2C203"
+    code = "R2C204"
 
     def __init__(self, tree):
         self.tree = tree
