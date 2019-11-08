@@ -1,38 +1,24 @@
-# Flake8 plugin for Flask, by r2c
+# flake8-flask
 
-Flake8 plugin for detecting flask best practices
+flake8-flask is a plugin for flake8 with checks specifically for the [flask](https://pypi.org/project/Flask/) framework.
 
-## Checks
-
-## Installing
+## Installation
 
 ```
-$ python -m pip install flake8-flask
+pip install flake8-flask
 ```
 
-_Specify `python2` or `python3` to install for a specific Python version._
-
-And double check that it was installed correctly:
+Validate the install using `--version`. flake8-flask adds two plugins, but this will be consolidated in a very near-future version. :)
 
 ```
-$ python -m flake8 -h
-Usage: flake8 [options] file file ...
-
-...
-
-Installed plugins: flake8-flask8: 0.0.1, mccabe: 0.5.3, pycodestyle: 2.2.0, pyflakes: 1.3.0
+> flake8 --version
+3.7.9 (mccabe: 0.6.1, need-filename-or-mimetype-for-file-objects-in-send-file: 0.0.7, pycodestyle: 2.5.0, pyflakes: 2.1.1, secure-set-cookie: 0.0.2)
 ```
 
-## Using
+## List of warnings
 
-Click best practices is a flake8 plugin. You can easily use this plugin by
+**R2C202**: `need-filename-or-mimetype-for-file-objects-in-send-file`: This check detects the use of a file-like object in `flask.send_file` without either `mimetype` or `attachment_filename` keyword arguments. `send_file` will throw a ValueError in this situation.
 
-```
-$ python -m flake8 --select=R2C /path/to/code
-```
+**R2C203**: `secure-set-cookie`: This check detects calls to `response.set_cookie` that do not have `secure`, `httponly`, and `samesite` set. This follows the [guidance in the Flask documentation](https://flask.palletsprojects.com/en/1.1.x/security/#set-cookie-options).
 
-## Testing
 
-```
-$ pytest
-```
