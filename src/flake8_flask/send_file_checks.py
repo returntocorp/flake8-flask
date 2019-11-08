@@ -35,7 +35,7 @@ class SendFileChecks(object):
             )
 
     def _message_for(self):
-        return f"{self.code} passing a file-like object to send_file without a mimetype or attachment_filename will raise a ValueError"
+        return f"{self.code} passing a file-like object to flask.send_file without a mimetype or attachment_filename will raise a ValueError"
 
 
 class SendFileChecksVisitor(FlaskBaseVisitor):
