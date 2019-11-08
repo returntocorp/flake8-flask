@@ -10,6 +10,7 @@ setuptools.setup(
     version="0.1.1",
     description="flake8 plugin with checks for the Flask framework, by r2c",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     author="grayson",
     author_email="grayson@r2c.dev",
     url="https://r2c.dev",
