@@ -41,10 +41,10 @@ class TalismanChecks(object):
 
     def _message_for(self, node):
         if self.visitor.is_imported(MODULE_NAME):
-            return f"{self.code} good job using flask_talisman but it's not initialized"
+            return f"{self.code} good job using flask-talisman but it's not initialized"
         else:
             return (
-                f"{self.code} you should use flask_talisman to properly secure your app"
+                f"{self.code} you should use flask-talisman to properly secure your app"
             )
 
 
