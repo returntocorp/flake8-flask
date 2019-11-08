@@ -12,7 +12,7 @@ logger.addHandler(handler)
 
 
 class SecureSetCookies:
-    name = "SecureSetCookies"
+    name = "secure-set-cookie"
     version = "0.0.2"
     code = "R2C203"
 

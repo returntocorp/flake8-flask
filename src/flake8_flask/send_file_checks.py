@@ -14,7 +14,7 @@ logger.addHandler(handler)
 
 
 class SendFileChecks(object):
-    name = "SendFileChecks"
+    name = "need-filename-or-mimetype-for-file-objects-in-send-file"
     version = "0.0.7"
     code = "R2C202"
 
