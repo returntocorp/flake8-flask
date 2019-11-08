@@ -1,3 +1,12 @@
+# 0.1.2
+
+- added content-type to setup.py
+
+# 0.1.1
+
+- added a better README
+- added README to setup.py
+
 # 0.1.0
 
 - release to pypi (https://pypi.org/project/flake8-flask/)
