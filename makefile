@@ -16,6 +16,7 @@ release:
 	python3 -m twine upload dist/*
 
 test:
+	export PYTHONPATH=`pwd`/src
 	pytest
 
 clean:
