@@ -40,7 +40,7 @@ class TalismanChecks(object):
             yield (node.lineno, node.col_offset, self._message_for(node), self.name)
 
     def _message_for(self, node):
-        if self.visitor._talisman_imported:
+        if self.visitor.is_imported(MODULE_NAME):
             return f"{self.code} good job using flask_talisman but it's not initialized"
         else:
             return (
@@ -50,27 +50,9 @@ class TalismanChecks(object):
 
 class TalismanChecksVisitor(FlaskBaseVisitor):
     def __init__(self):
-        self._talisman_imported = False
-        self._flask_imported = False
         self._talimans_initialized = False
         self._flask_initialized = False
         super(TalismanChecksVisitor, self).__init__()
-
-    def visit_Import(self, import_node):
-        logger.debug(f"Visiting Import node: {ast.dump(import_node)}")
-        # TODO detect import
-        names = {alias.name for alias in import_node.names}
-        if MODULE_NAME in names:
-            self._talisman_imported = True
-        elif FLASK_NAME in names:
-            self._flask_imported = True
-
-    def visit_ImportFrom(self, import_from_node):
-        logger.debug(f"Visiting ImportFrom node: {ast.dump(import_from_node)}")
-        if import_from_node.module == MODULE_NAME:
-            self._talisman_imported = True
-        elif import_from_node.module == FLASK_NAME:
-            self._flask_imported = True
 
     def visit_Call(self, call_node):
         logger.debug(f"Visiting Call node: {ast.dump(call_node)}")
