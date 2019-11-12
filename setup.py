@@ -21,6 +21,7 @@ setuptools.setup(
         "flake8.extension": [
             "R2C202=flake8_flask.send_file_checks:SendFileChecks",
             "R2C203=flake8_flask.secure_set_cookies:SecureSetCookies",
+            "R2C204=flake8_flask.talisman_checks:TalismanChecks",
         ],
     },
     classifiers=[
