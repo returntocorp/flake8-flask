@@ -32,7 +32,12 @@ class TalismanChecks(object):
         self.visitor.visit(self.tree)
 
         reports = []
-        if self.visitor.is_imported(FLASK_NAME) and self.visitor._flask_initialized and not self.visitor._talisman_initialized:
+        if (
+            self.visitor.is_imported(FLASK_NAME)
+            and self.visitor.is_imported(MODULE_NAME)
+            and self.visitor._flask_initialized
+            and not self.visitor._talisman_initialized
+        ):
             reports = self.visitor.report_nodes
 
         for report in reports:
@@ -40,12 +45,7 @@ class TalismanChecks(object):
             yield (node.lineno, node.col_offset, self._message_for(node), self.name)
 
     def _message_for(self, node):
-        if self.visitor.is_imported(MODULE_NAME):
-            return f"{self.code} good job using flask-talisman but it's not initialized"
-        else:
-            return (
-                f"{self.code} you should use flask-talisman to properly secure your app"
-            )
+        return f"{self.code} flask-talisman is imported but it's not initialized so it's not protecting the app. You should intitalize it with Talisman(app)"
 
 
 class TalismanChecksVisitor(FlaskBaseVisitor):

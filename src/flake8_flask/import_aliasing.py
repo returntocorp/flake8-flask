@@ -37,8 +37,8 @@ class MethodVisitor(ast.NodeVisitor):
             from alias import ...
             from alias import ... as ...
         """
+        self.module_imports.append(node.module)
         if node.module == self.module_alias:
-            self.module_imports.append(node.module)
             for n in node.names:
                 if n.name in self.method_names():
                     self.aliases[n.name] = n.asname or n.name

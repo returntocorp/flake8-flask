@@ -30,15 +30,27 @@ flask_talisman.Talisman(app)
     assert check_code(code) == []
 
 
-## SHOULD ALERT
 def test_basic_app_without_talisman():
     code = """
 from flask import Flask; app = Flask(__name__)
 """
+    assert check_code(code) == []
+
+
+## SHOULD ALERT
+
+
+def test_basic_app_with_talisman_no_init():
+    code = """
+from flask import Flask
+import flask_talisman
+
+app = Flask(__name__)
+"""
     assert len(check_code(code)) == 1
 
 
-# With keyword args
+# Import but no init
 def test_basic_app_with_talisman_no_init():
     code = """
 from flask import Flask
