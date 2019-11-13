@@ -1,3 +1,7 @@
+# 0.1.4
+
+- fixed a bug in import resolution that missed `from flask_talisman import Talisman`
+
 # 0.1.3
 
 - Introduced R2C204 - Talisman for testing. This check will fire when flask-talisman (https://github.com/GoogleCloudPlatform/flask-talisman) is not used.

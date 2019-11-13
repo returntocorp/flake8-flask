@@ -7,7 +7,7 @@ with open("README.md") as fin:
 
 setuptools.setup(
     name="flake8_flask",
-    version="0.1.3",
+    version="0.1.4",
     description="flake8 plugin with checks for the Flask framework, by r2c",
     long_description=long_description,
     long_description_content_type='text/markdown',
