@@ -1,8 +1,7 @@
 from flask import Flask
-import flask_talisman
+from flask_talisman import Talisman
 
 app = Flask(__name__)
-flask_talisman.Talisman(app)
 
 
 @app.route("/")
