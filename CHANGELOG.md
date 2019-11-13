@@ -1,3 +1,7 @@
+# 0.1.3
+
+- Introduced R2C204 - Talisman for testing. This check will fire when flask-talisman (https://github.com/GoogleCloudPlatform/flask-talisman) is not used.
+
 # 0.1.2
 
 - added content-type to setup.py
