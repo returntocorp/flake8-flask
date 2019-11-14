@@ -33,7 +33,7 @@ class SecureSetCookies:
             )
 
     def _message_for(self):
-        return f"{self.code} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax'.  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None."
+        return f"{self.code} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None."
 
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
