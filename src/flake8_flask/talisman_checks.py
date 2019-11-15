@@ -20,7 +20,7 @@ FLASK_FUNCTION_NAME = "Flask"
 
 
 class TalismanChecks(object):
-    name = "TalismanChecks"
+    name = "talisman_should_wrap_application"
     version = "0.0.1"
     code = "R2C204"
 

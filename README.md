@@ -21,4 +21,4 @@ Validate the install using `--version`. flake8-flask adds two plugins, but this 
 
 **R2C203**: `secure-set-cookie`: This check detects calls to `response.set_cookie` that do not have `secure`, `httponly`, and `samesite` set. This follows the [guidance in the Flask documentation](https://flask.palletsprojects.com/en/1.1.x/security/#set-cookie-options).
 
-
+**R2C204**: `talisman_should_wrap_application`: Google have a flask plugin with good security headers and cookie defaults. We want to be opinionated and help devs who haven’t heard of flask-talisman us it and if they use it, make sure they wrap the app to inject the hooks needed into flask.
