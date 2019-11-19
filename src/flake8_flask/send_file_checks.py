@@ -12,8 +12,7 @@ logger.addHandler(handler)
 
 
 class SendFileChecksVisitor(FlaskBaseVisitor):
-    name = "need-filename-or-mimetype-for-file-objects-in-send-file"
-    code = "r2c202"
+    name = "r2c-need-filename-or-mimetype-for-file-objects-in-send-file"
 
     def _is_os_path_join(self, call_node):
         # This makes me sad but it'll work.
@@ -85,7 +84,7 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
         self.report_nodes.append(
             {
                 "node": call_node,
-                "message": f"{self.code} Passing a file-like object to flask.send_file without the mimetype or attachment_filename keyword arg will raise a ValueError. If you are sending a static file, pass in a string path to the file instead. Otherwise, specify a mimetype or attachment_filename in flask.send_file.",
+                "message": f"{self.name} Passing a file-like object to flask.send_file without the mimetype or attachment_filename keyword arg will raise a ValueError. If you are sending a static file, pass in a string path to the file instead. Otherwise, specify a mimetype or attachment_filename in flask.send_file.",
             }
         )
 

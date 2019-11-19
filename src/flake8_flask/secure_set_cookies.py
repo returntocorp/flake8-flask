@@ -12,8 +12,7 @@ logger.addHandler(handler)
 
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
-    name = "secure-set-cookie"
-    code = "r2c203"
+    name = "r2c-secure-set-cookie"
 
     def _is_set_cookie(self, call_node):
         if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
@@ -43,7 +42,7 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
         self.report_nodes.append(
             {
                 "node": call_node,
-                "message": f"{self.code} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None.",
+                "message": f"{self.name} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None.",
             }
         )
 
