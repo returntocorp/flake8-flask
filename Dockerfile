@@ -4,6 +4,8 @@ ENV PYTHONIOENCODING utf-8
 
 COPY . /analyzer
 WORKDIR /analyzer
+ENV PYTHONPATH=/analyzer/src
+
 RUN pip3 install flake8 flake8-json
 
 # local install
