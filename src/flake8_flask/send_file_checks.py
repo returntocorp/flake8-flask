@@ -75,10 +75,10 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
 
         keywords = call_node.keywords
         if any([kw.arg == "mimetype" for kw in keywords]):
-            logger.debug("requests call has the 'timeout' keyword, so we're good")
+            logger.debug("set_cookie has the 'mimetype' keyword, so we're good")
             return
         if any([kw.arg == "attachment_filename" for kw in keywords]):
-            logger.debug("requests call has the 'timeout' keyword, so we're good")
+            logger.debug("set_cookie has the 'attachment_filename' keyword, so we're good")
             return
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")

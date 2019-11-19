@@ -47,27 +47,3 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
             }
         )
 
-
-if __name__ == "__main__":
-    import argparse
-
-    logger.setLevel(logging.DEBUG)
-
-    parser = argparse.ArgumentParser()
-    # Add arguments here
-    parser.add_argument("inputfile")
-
-    args = parser.parse_args()
-
-    logger.info(f"Parsing {args.inputfile}")
-    with open(args.inputfile, "r") as fin:
-        data = fin.read()
-    tree = ast.parse(data)
-    lines = data.split("\n")
-
-    visitor = SecureSetCookiesVisitor()
-    visitor.visit(tree)
-    print("*** Hits:")
-    for report in visitor.report_nodes:
-        node = report["node"]
-        print(node.lineno, node.col_offset, lines[node.lineno - 1])
