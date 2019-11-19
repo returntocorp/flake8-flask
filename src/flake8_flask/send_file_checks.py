@@ -7,38 +7,14 @@ from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-)
+handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
 logger.addHandler(handler)
 
 
-class SendFileChecks(object):
-    name = "need-filename-or-mimetype-for-file-objects-in-send-file"
-    version = "0.0.7"
-    code = "R2C202"
-
-    def __init__(self, tree):
-        self.tree = tree
-
-    def run(self):
-        visitor = SendFileChecksVisitor()
-        visitor.visit(self.tree)
-
-        for report in visitor.report_nodes:
-            node = report["node"]
-            yield (
-                node.lineno,
-                node.col_offset,
-                self._message_for(),
-                self.name,
-            )
-
-    def _message_for(self):
-        return f"{self.code} passing a file-like object to flask.send_file without a mimetype or attachment_filename will raise a ValueError"
-
-
 class SendFileChecksVisitor(FlaskBaseVisitor):
+    name = "need-filename-or-mimetype-for-file-objects-in-send-file"
+    code = "r2c202"
+
     def _is_os_path_join(self, call_node):
         # This makes me sad but it'll work.
         if (
@@ -54,9 +30,7 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
 
     def _is_format_string(self, call_node):
         if isinstance(call_node.func, ast.Attribute):
-            if call_node.func.attr == "format" and isinstance(
-                call_node.func.value, ast.Str
-            ):
+            if call_node.func.attr == "format" and isinstance(call_node.func.value, ast.Str):
                 return True
         return False
 
@@ -88,9 +62,7 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             return
         elif isinstance(arg0, ast.Name):
             if not self._is_name_node_open(arg0):
-                logger.debug(
-                    "Variable dosn't resolve to open(...), so assuming we're good"
-                )
+                logger.debug("Variable dosn't resolve to open(...), so assuming we're good")
                 return
         elif isinstance(arg0, ast.Call):
             if not self._is_open(arg0):
@@ -111,7 +83,10 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")
         self.report_nodes.append(
-            {"node": call_node,}
+            {
+                "node": call_node,
+                "message": f"{self.code} Passing a file-like object to flask.send_file without the mimetype or attachment_filename keyword arg will raise a ValueError. If you are sending a static file, pass in a string path to the file instead. Otherwise, specify a mimetype or attachment_filename in flask.send_file.",
+            }
         )
 
 
