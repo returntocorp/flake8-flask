@@ -2,12 +2,12 @@ import json
 import setuptools
 
 # Version management
-with open("VERSION", 'r') as fin:
-    __version__ = fin.read().strip()
-with open("analyzer.json", 'r') as fin:
+from flake8_flask import __version__
+
+with open("analyzer.json", "r") as fin:
     analyzer_json = json.load(fin)
-analyzer_json['version'] = __version__
-with open("analyzer.json", 'w') as fout:
+analyzer_json["version"] = __version__
+with open("analyzer.json", "w") as fout:
     json.dump(analyzer_json, fout)
 
 requires = ["flake8 > 3.6.0"]

@@ -2,6 +2,7 @@ import ast
 import logging
 import sys
 
+from flake8_flask import __version__
 from flake8_flask.secure_set_cookies import SecureSetCookiesVisitor
 from flake8_flask.send_file_checks import SendFileChecksVisitor
 
@@ -14,7 +15,7 @@ logger.addHandler(handler)
 
 class Flake8Flask:
     name = "flake8-flask"
-    version = "0.1.4"
+    version = __version__
 
     def __init__(self, tree):
         self.tree = tree
