@@ -1,3 +1,7 @@
+# 0.1.5
+
+- moved all the Visitor classes to a single entrypoint. This keeps the plugin from looking like individually installed plugins for each check.
+
 # 0.1.4
 
 - fixed a bug in import resolution that missed `from flask_talisman import Talisman`

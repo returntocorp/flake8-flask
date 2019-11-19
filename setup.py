@@ -1,4 +1,14 @@
+import json
 import setuptools
+
+# Version management
+with open("VERSION", 'r') as fin:
+    __version__ = fin.read().strip()
+with open("analyzer.json", 'r') as fin:
+    analyzer_json = json.load(fin)
+analyzer_json['version'] = __version__
+with open("analyzer.json", 'w') as fout:
+    json.dump(analyzer_json, fout)
 
 requires = ["flake8 > 3.6.0"]
 
@@ -7,7 +17,7 @@ with open("README.md") as fin:
 
 setuptools.setup(
     name="flake8_flask",
-    version="0.1.4",
+    version=__version__,
     description="flake8 plugin with checks for the Flask framework, by r2c",
     long_description=long_description,
     long_description_content_type="text/markdown",
