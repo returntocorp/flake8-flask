@@ -11,32 +11,9 @@ handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s -
 logger.addHandler(handler)
 
 
-class SecureSetCookies:
-    name = "secure-set-cookie"
-    version = "0.0.2"
-    code = "R2C203"
-
-    def __init__(self, tree):
-        self.tree = tree
-
-    def run(self):
-        visitor = SecureSetCookiesVisitor()
-        visitor.visit(self.tree)
-
-        for report in visitor.report_nodes:
-            node = report["node"]
-            yield (
-                node.lineno,
-                node.col_offset,
-                self._message_for(),
-                self.name,
-            )
-
-    def _message_for(self):
-        return f"{self.code} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None."
-
-
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
+    name = "r2c-secure-set-cookie"
+
     def _is_set_cookie(self, call_node):
         if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
             return True
@@ -63,30 +40,9 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")
         self.report_nodes.append(
-            {"node": call_node,}
+            {
+                "node": call_node,
+                "message": f"{self.name} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None.",
+            }
         )
 
-
-if __name__ == "__main__":
-    import argparse
-
-    logger.setLevel(logging.DEBUG)
-
-    parser = argparse.ArgumentParser()
-    # Add arguments here
-    parser.add_argument("inputfile")
-
-    args = parser.parse_args()
-
-    logger.info(f"Parsing {args.inputfile}")
-    with open(args.inputfile, "r") as fin:
-        data = fin.read()
-    tree = ast.parse(data)
-    lines = data.split("\n")
-
-    visitor = SecureSetCookiesVisitor()
-    visitor.visit(tree)
-    print("*** Hits:")
-    for report in visitor.report_nodes:
-        node = report["node"]
-        print(node.lineno, node.col_offset, lines[node.lineno - 1])

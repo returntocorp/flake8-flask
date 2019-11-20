@@ -1,3 +1,9 @@
+# 0.1.5
+
+- moved all the Visitor classes to a single entrypoint. This keeps the plugin from looking like individually installed plugins for each check.
+- better version management; now defines __version__ in __init__.py and propogates this to setup.py, analyzer.json, and main.py
+- removed the talisman check.  This will be split up into smaller checks in the future.
+
 # 0.1.4
 
 - fixed a bug in import resolution that missed `from flask_talisman import Talisman`

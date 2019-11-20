@@ -12,6 +12,7 @@ flake8 = "<4.0.0,>=3.6.0"
 pytest = "*"
 flake8_flask = {path = "."}
 libcst = "*"
+setup-py = "*"
 
 [requires]
 python_version = "3.7"
