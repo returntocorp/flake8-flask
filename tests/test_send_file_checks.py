@@ -56,6 +56,19 @@ send_file(fin)
     assert len(visitor.report_nodes) == 1
 
 
+@pytest.mark.true_positive
+def test_variable_resolution_without_file_mode():
+    code = """
+import flask
+fd = open("file.txt")
+flask.send_file(fd)
+"""
+    tree = ast.parse(code)
+    visitor = SendFileChecksVisitor()
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 1
+
+
 # Variable resolution with other statements
 @pytest.mark.true_positive
 def test_variable_resolution_with_statements():

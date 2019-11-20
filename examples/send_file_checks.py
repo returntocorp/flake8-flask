@@ -1,4 +1,6 @@
 ## SHOULD ALERT
+from flask import send_file as sndfl
+sndfl(open("file.txt"))
 
 # flask.send_file case
 def example1():
@@ -20,6 +22,11 @@ def example4():
     from flask import send_file
     fin = open("file.txt", 'r')
     send_file(fin)
+
+def without_filemode():
+    import flask
+    fin = open("file.txt")
+    flask.send_file(fin)
 
 # Variable resolution with other statements
 def example5():
