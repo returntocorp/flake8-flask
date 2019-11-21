@@ -32,6 +32,12 @@ def escaped_variables():
     return render_template("unsafe.txt", name=flask.Markup.escape(name))
 
 
+@app.route("/noqa")
+def noqa():
+    const_str = "I'll never change"
+    return render_template("unsafe.noqa", title=const_str)  # noqa r2c-unescaped-template-file-extension
+
+
 # False negatives
 @app.route("/taint")
 def taint():
