@@ -21,6 +21,10 @@ escape_function_names: Set[str] = {"escape"}
 
 
 class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
+    def __init__(self, handle_edge_cases=True):
+        self.handle_edge_cases = handle_edge_cases
+        super(UnescapedTemplateFileExtensionsVisitor, self).__init__()
+
     name = "r2c-unescaped-template-file-extension"
 
     def _get_template_extension(self, template_name: str) -> str:
@@ -93,11 +97,12 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
             return
 
         # Edge cases
-        if self._edge_case_detect_return_content_type_with_text(call_node):
-            logger.debug(
-                "Template is rendered with `text/plain` mimetype. Assuming this is safe."
-            )
-            return
+        if self.handle_edge_cases:
+            if self._edge_case_detect_return_content_type_with_text(call_node):
+                logger.debug(
+                    "Template is rendered with `text/plain` mimetype. Assuming this is safe."
+                )
+                return
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")
         extensions = set(
