@@ -133,6 +133,36 @@ def what_if():
     assert str({"txt"}) in results[0]["message"]
 
 
+# With edge cases active
+@pytest.mark.true_positive
+def test_return_with_content_type_text_active():
+    code = (
+        boilerplate
+        + """
+@app.route("/opml")
+def opml():
+    sort_key = flask.request.args.get("sort", "(unread > 0) DESC, snr")
+    if sort_key == "feed_title":
+        sort_key = "lower(feed_title)"
+    order = flask.request.args.get("order", "DESC")
+    with dbop.db() as db:
+        rows = dbop.opml(db)
+        return (
+            flask.render_template("opml.opml", atom_content=atom_content, rows=rows),
+            200,
+            {"Content-Type": "text/plain"},
+        )
+"""
+    )
+    tree = ast.parse(code)
+    for node in ast.walk(tree):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node
+    visitor = UnescapedTemplateFileExtensionsVisitor(filter_edge_cases=False)
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 1
+
+
 ## True negatives
 @pytest.mark.true_negative
 def test_no_variables():
@@ -239,7 +269,13 @@ def opml():
         )
 """
     )
-    assert len(check_code(code)) == 0
+    tree = ast.parse(code)
+    for node in ast.walk(tree):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node
+    visitor = UnescapedTemplateFileExtensionsVisitor(filter_edge_cases=True)
+    visitor.visit(tree)
+    assert len(visitor.report_nodes) == 0
 
 
 ## False negatives
@@ -247,16 +283,16 @@ def opml():
 # It might be safe to assume that sanitization is the
 # last thing that happens before it gets rendered, since once
 # it's touched again it's no longer considered "sanitized".
-@pytest.mark.false_negative
-def test_flow_through_sanitizer():
-    code = (
-        boilerplate
-        + """
-@app.route("/taint")
-def taint():
-    name = request.args.get("name")
-    safe_name = flask.Markup.escape(name)
-    return render_template("unsafe.txt", name=safe_name)
-"""
-    )
-    assert len(check_code(code)) == 0
+# @pytest.mark.false_negative
+# def test_flow_through_sanitizer():
+#    code = (
+#        boilerplate
+#        + """
+# @app.route("/taint")
+# def taint():
+#    name = request.args.get("name")
+#    safe_name = flask.Markup.escape(name)
+#    return render_template("unsafe.txt", name=safe_name)
+# """
+#    )
+#    assert len(check_code(code)) == 0
