@@ -1,6 +1,8 @@
 import ast
+
 import pytest
 from flake8_flask.secure_set_cookies import SecureSetCookiesVisitor
+
 
 # secure is not set, httponly is not set, samesite is not set
 @pytest.mark.true_positive
