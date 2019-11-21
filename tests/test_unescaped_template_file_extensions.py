@@ -13,6 +13,9 @@ logger.setLevel(logging.DEBUG)
 
 def check_code(code):
     tree = ast.parse(code)
+    for node in ast.walk(tree):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node
     visitor = UnescapedTemplateFileExtensionsVisitor()
     visitor.visit(tree)
     return visitor.report_nodes
@@ -213,6 +216,29 @@ from library import render_template
 def not_flask():
     return render_template("hello.txt")
 """
+    assert len(check_code(code)) == 0
+
+
+@pytest.mark.true_negative
+def test_return_with_content_type_text():
+    code = (
+        boilerplate
+        + """
+@app.route("/opml")
+def opml():
+    sort_key = flask.request.args.get("sort", "(unread > 0) DESC, snr")
+    if sort_key == "feed_title":
+        sort_key = "lower(feed_title)"
+    order = flask.request.args.get("order", "DESC")
+    with dbop.db() as db:
+        rows = dbop.opml(db)
+        return (
+            flask.render_template("opml.opml", atom_content=atom_content, rows=rows),
+            200,
+            {"Content-Type": "text/plain"},
+        )
+"""
+    )
     assert len(check_code(code)) == 0
 
 

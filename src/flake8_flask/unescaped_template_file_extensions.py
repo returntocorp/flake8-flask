@@ -51,6 +51,26 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
         elif isinstance(fxn, ast.Name):
             return fxn.id in escape_function_names
 
+    def _edge_case_detect_return_content_type_with_text(
+        self, call_node: ast.Call
+    ) -> bool:
+        """
+        Detects if this call to `render_template` is in a return
+        and that the third return element is a dict that contains
+        {"content-type": "text/plain"}. Flask routes can exhibit
+        this behavior, and if the template is rendered as "text/plain"
+        we assume it is safe.
+        """
+        if isinstance(call_node.parent, ast.Tuple):
+            if isinstance(call_node.parent.parent, ast.Return):
+                return_value_tuple_node = call_node.parent
+                headers_dict_node = return_value_tuple_node.elts[2]
+                for i, key in enumerate(headers_dict_node.keys):
+                    if isinstance(key, ast.Str) and key.s.lower() == "content-type":
+                        if isinstance(headers_dict_node.values[i], ast.Str):
+                            return headers_dict_node.values[i].s.lower() == "text/plain"
+        return False
+
     def visit_Call(self, call_node: ast.Call):
         # Is this flask.render_template?
         if not self.is_method(call_node, fxn_name):
@@ -70,6 +90,13 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
         # If not autoescaped, check for escaped vars
         if all([self._is_kwarg_escaped(kw) for kw in call_node.keywords]):
             logger.debug("All context variables are escaped.")
+            return
+
+        # Edge cases
+        if self._edge_case_detect_return_content_type_with_text(call_node):
+            logger.debug(
+                "Template is rendered with `text/plain` mimetype. Assuming this is safe."
+            )
             return
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")

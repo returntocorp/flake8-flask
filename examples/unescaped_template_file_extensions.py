@@ -34,8 +34,27 @@ def escaped_variables():
 
 @app.route("/noqa")
 def noqa():
-    const_str = "I'll never change"
-    return render_template("unsafe.noqa", title=const_str)  # noqa r2c-unescaped-template-file-extension
+    # Forgive the weirdness. It's to get it under black's line length
+    # so it doesn't autoformat the noqa onto a different line.
+    rt = render_template
+    s = "I'll never change"
+    t = rt("unsafe.noqa", x=s)  # noqa r2c-unescaped-template-file-extension
+
+
+# Example of an edge case
+@app.route("/opml")
+def opml():
+    sort_key = flask.request.args.get("sort", "(unread > 0) DESC, snr")
+    if sort_key == "feed_title":
+        sort_key = "lower(feed_title)"
+    order = flask.request.args.get("order", "DESC")
+    with dbop.db() as db:
+        rows = dbop.opml(db)
+        return (
+            flask.render_template("opml.opml", atom_content=atom_content, rows=rows),
+            200,
+            {"Content-Type": "text/plain"},
+        )
 
 
 # False negatives

@@ -22,8 +22,13 @@ class Flake8Flask:
     name = "flake8-flask"
     version = __version__
 
-    def __init__(self, tree):
+    def __init__(self, tree, add_parents=True):
         self.tree = tree
+        # Add in parent nodes to tree
+        if add_parents:
+            for node in ast.walk(self.tree):
+                for child in ast.iter_child_nodes(node):
+                    child.parent = node
 
     def run(self):
         visitors = [
