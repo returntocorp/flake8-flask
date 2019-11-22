@@ -112,6 +112,6 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
         self.report_nodes.append(
             {
                 "node": call_node,
-                "message": f"{self.name} Flask does not autoescape templates with the {str(extensions_to_go_in_message)} extension by default. Flask only autoescapes .html, .htm, .xml, and .xhtml files. If you want to use this extension, make sure your variables are escaped using `flask.Markup.escape`. If you are sure your variables are safe, you can disable this line by adding the comment #noqa {self.name}.",
+                "message": f"{self.name} Flask does not autoescape templates with the {str(extensions_to_go_in_message)} extension by default. Flask only autoescapes .html, .htm, .xml, and .xhtml files. Make sure your variables are escaped using `flask.Markup.escape`.",
             }
         )
