@@ -21,4 +21,6 @@ Validate the install using `--version`.
 
 `r2c-secure-set-cookie`: This check detects calls to `response.set_cookie` that do not have `secure`, `httponly`, and `samesite` set. This follows the [guidance in the Flask documentation](https://flask.palletsprojects.com/en/1.1.x/security/#set-cookie-options).
 
+`r2c-unescaped-template-file-extension`: Flask will not autoescape Jinja templates that do not have .html, .htm, .xml, or .xhtml as extensions. This check will alert you if you do not have one of these extensions. This check will also do its best to detect if context variables are escaped if a non-escaped extension is used.
+
 Have an idea for a check? Reach out to us at https://r2c.dev!
