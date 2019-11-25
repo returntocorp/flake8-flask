@@ -12,7 +12,7 @@ logger.addHandler(handler)
 
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
-    name = "r2c-secure-set-cookie"
+    name = "r2c-flask-secure-set-cookie"
 
     def _is_set_cookie(self, call_node):
         if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
