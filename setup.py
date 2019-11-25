@@ -24,7 +24,6 @@ setuptools.setup(
     author="grayson",
     author_email="grayson@r2c.dev",
     url="https://github.com/returntocorp/flake8-flask",
-    package_dir={"": "src/"},
     packages=["flake8_flask"],
     python_requires=">=3.6",
     entry_points={"flake8.extension": ["r2c=flake8_flask.main:Flake8Flask"],},
