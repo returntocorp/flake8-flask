@@ -1,12 +1,16 @@
+# 0.2.1
+
+- New naming scheme for checks
+
 # 0.2.0
 
-- added a new check, unescaped_template_file_extension, which will detect when `render_template` is called on a template file with an file extension that Flask does not escape by default.  More information at https://check.bento.dev.
+- added a new check, unescaped_template_file_extension, which will detect when `render_template` is called on a template file with an file extension that Flask does not escape by default. More information at https://check.bento.dev.
 
 # 0.1.5
 
 - moved all the Visitor classes to a single entrypoint. This keeps the plugin from looking like individually installed plugins for each check.
-- better version management; now defines __version__ in __init__.py and propogates this to setup.py, analyzer.json, and main.py
-- removed the talisman check.  This will be split up into smaller checks in the future.
+- better version management; now defines **version** in **init**.py and propogates this to setup.py, analyzer.json, and main.py
+- removed the talisman check. This will be split up into smaller checks in the future.
 - changed all names to be human-readable.
 
 # 0.1.4
