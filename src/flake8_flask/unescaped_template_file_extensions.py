@@ -25,7 +25,7 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
         self.filter_edge_cases = filter_edge_cases
         super(UnescapedTemplateFileExtensionsVisitor, self).__init__()
 
-    name = "r2c-unescaped-template-file-extension"
+    name = "r2c-flask-unescaped-file-extension"
 
     def _get_template_extension(self, template_name: str) -> str:
         splits: List[str] = template_name.split(".")
