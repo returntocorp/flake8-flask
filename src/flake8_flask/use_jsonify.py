@@ -14,6 +14,8 @@ handler.setFormatter(
 )
 logger.addHandler(handler)
 
+JSON_MODULE_NAME = "json"
+
 
 class JsonifyVisitor(FlaskBaseVisitor):
     name = "r2c-flask-use-jsonify"
@@ -48,8 +50,7 @@ class JsonifyVisitor(FlaskBaseVisitor):
             ):
                 return True
         elif isinstance(call_node.func, ast.Name):
-            if self.is_imported("json") and call_node.func.id == "dumps":
-                return True
+            return self.is_method_alias_of(call_node.func.id, "dumps", "json")
         return False
 
     def visit_Return(self, return_node: ast.Return):

@@ -1,7 +1,5 @@
 import ast
-
 import pytest
-
 from flake8_flask.use_jsonify import JsonifyVisitor
 
 
@@ -46,6 +44,22 @@ def user2():
     return dumps(user_dict)
 """
     assert len(check_code(code)) == 1
+
+
+@pytest.mark.true_negative
+def test_not_dumps():
+    code = """
+import flask
+import json
+from bson import dumps
+
+app = flask.Flask(__name__)
+@app.route("/user")
+def user():
+    user_dict = get_user(request.args.get("id"))
+    return dumps(user_dict)
+"""
+    assert len(check_code(code)) == 0
 
 
 @pytest.mark.true_negative
