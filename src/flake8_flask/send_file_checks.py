@@ -55,7 +55,7 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
 
         fxn_name = self._get_function_name(call_node)
         logger.debug(f"Found function name: {fxn_name}")
-        if not self.is_method(call_node, "send_file"):
+        if not self.is_node_method_alias_of(call_node, "send_file", "flask"):
             logger.debug("Call node is not a flask API call")
             return
 

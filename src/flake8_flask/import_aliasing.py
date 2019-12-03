@@ -53,14 +53,12 @@ class MethodVisitor(ast.NodeVisitor):
     def is_method_alias_of(self, fxn_name: str, original_fxn_name: str, module_name: str) -> bool:
         return fxn_name == self.method_aliases.get(module_name, {}).get(original_fxn_name, "")
 
-    def is_method(self, node: ast.Call, name: str) -> bool:
+    def is_node_method_alias_of(self, node: ast.Call, original_fxn_name: str, module_name: str) -> bool:
         if isinstance(node.func, ast.Attribute):
             if isinstance(node.func.value, ast.Name):
-                if node.func.value.id == self.module_aliases.get(node.func.value.id) and node.func.attr == name:
-                    return True
-        elif isinstance(node.func, ast.Name) and name in self.aliases:
-            if node.func.id == self.aliases[name]:
-                return True
+                return self.module_aliases.get(module_name) == node.func.value.id and original_fxn_name == node.func.attr
+        elif isinstance(node.func, ast.Name):
+            return self.is_method_alias_of(node.func.id, original_fxn_name, module_name)
         return False
 
     def get_call_keywords(self, d: ast.Call) -> Dict[str, ast.Expr]:

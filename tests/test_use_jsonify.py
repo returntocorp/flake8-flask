@@ -88,16 +88,17 @@ def otheruser():
     assert len(check_code(code)) == 0
 
 
-@pytest.mark.false_negative
-def test_variable_resolution():
-    code = """
-from flask import Flask, jsonify
-app = Flask(__name__)
-
-@app.route("/user")
-def user():
-    user_dict = get_user(request.args.get("id"))
-    json_response = jsonify(user_dict)
-    return json_response
-"""
-    assert len(check_code(code)) == 1
+#@pytest.mark.false_negative
+#def test_variable_resolution():
+#    code = """
+#from flask import Flask, jsonify
+#app = Flask(__name__)
+#
+#@app.route("/user")
+#def user():
+#    user_dict = get_user(request.args.get("id"))
+#    json_response = jsonify(user_dict)
+#    return json_response
+#"""
+#    assert len(check_code(code)) == 1
+#

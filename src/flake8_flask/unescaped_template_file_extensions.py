@@ -15,14 +15,14 @@ handler.setFormatter(
 logger.addHandler(handler)
 
 
-fxn_name: str = "render_template"
+FXN_NAME: str = "render_template"
 escaped_extensions: Set[str] = {"html", "htm", "xml", "xhtml"}
 escape_function_names: Set[str] = {"escape"}
 
 
 class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
-    def __init__(self, filter_edge_cases=False):
-        self.filter_edge_cases = filter_edge_cases
+    def __init__(self, include_edge_cases=False):
+        self.include_edge_cases = include_edge_cases
         super(UnescapedTemplateFileExtensionsVisitor, self).__init__()
 
     name = "r2c-unescaped-template-file-extension"
@@ -77,11 +77,12 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
 
     def visit_Call(self, call_node: ast.Call):
         # Is this flask.render_template?
-        if not self.is_method(call_node, fxn_name):
-            logger.debug(f"This call is not {fxn_name}")
+        if not self.is_node_method_alias_of(call_node, FXN_NAME, MODULE_NAME):
+            logger.debug(f"This call is not {FXN_NAME}")
             return
 
         # Check if the possible values aren't an autoescape extension
+        logger.debug(ast.dump(call_node))
         arg0 = call_node.args[0]
         possible_values = self._resolve_to_possible_values(arg0)
         logger.debug(possible_values)
@@ -97,7 +98,7 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
             return
 
         # Edge cases
-        if self.filter_edge_cases:
+        if self.include_edge_cases:
             if self._edge_case_detect_return_content_type_with_text(call_node):
                 logger.debug(
                     "Template is rendered with `text/plain` mimetype. Assuming this is safe."

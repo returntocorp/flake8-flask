@@ -81,6 +81,15 @@ import os, sys
     assert vis.is_imported("os") == True
     assert vis.is_imported("sys") == True
 
+def test_import_aliasing():
+    code = """
+import flask as fl
+app = fl.Flask(__name__)
+"""
+    vis = check_code(code)
+    assert vis.is_imported("flask")
+    assert vis.module_aliases["flask"] == "fl"
+
 def test_method_import():
     code = """
 from flask import Flask, jsonify
