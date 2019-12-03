@@ -7,7 +7,9 @@ from flake8_flask.constants import MODULE_NAME
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(handler)
 
 
@@ -15,14 +17,19 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
     name = "r2c-secure-set-cookie"
 
     def _is_set_cookie(self, call_node):
-        if isinstance(call_node.func, ast.Attribute) and call_node.func.attr == "set_cookie":
+        if (
+            isinstance(call_node.func, ast.Attribute)
+            and call_node.func.attr == "set_cookie"
+        ):
             return True
         return False
 
     def visit_Call(self, call_node):
         # If Flask is imported
         if not self.is_imported(MODULE_NAME):
-            logger.debug(f"{MODULE_NAME} is not imported, any calls to set_cookie probably aren't flask")
+            logger.debug(
+                f"{MODULE_NAME} is not imported, any calls to set_cookie probably aren't flask"
+            )
             logger.debug(self.module_imports)
             return
 
@@ -45,4 +52,3 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
                 "message": f"{self.name} Flask cookies should be handled securely by setting secure=True, httponly=True, and samesite='Lax' in set_cookie(...).  If your situation calls for different settings, explicitly disable the setting.  If you want to send the cookie over http, set secure=False.  If you want to let client-side JavaScript read the cookie, set httponly=False.  If you want to attach cookies to requests for external sites, set samesite=None.",
             }
         )
-

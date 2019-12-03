@@ -7,7 +7,9 @@ from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(stream=sys.stderr)
-handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+)
 logger.addHandler(handler)
 
 
@@ -29,7 +31,9 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
 
     def _is_format_string(self, call_node):
         if isinstance(call_node.func, ast.Attribute):
-            if call_node.func.attr == "format" and isinstance(call_node.func.value, ast.Str):
+            if call_node.func.attr == "format" and isinstance(
+                call_node.func.value, ast.Str
+            ):
                 return True
         return False
 
@@ -61,7 +65,9 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             return
         elif isinstance(arg0, ast.Name):
             if not self._is_name_node_open(arg0):
-                logger.debug("Variable dosn't resolve to open(...), so assuming we're good")
+                logger.debug(
+                    "Variable dosn't resolve to open(...), so assuming we're good"
+                )
                 return
         elif isinstance(arg0, ast.Call):
             if not self._is_open(arg0):
@@ -77,7 +83,9 @@ class SendFileChecksVisitor(FlaskBaseVisitor):
             logger.debug("set_cookie has the 'mimetype' keyword, so we're good")
             return
         if any([kw.arg == "attachment_filename" for kw in keywords]):
-            logger.debug("set_cookie has the 'attachment_filename' keyword, so we're good")
+            logger.debug(
+                "set_cookie has the 'attachment_filename' keyword, so we're good"
+            )
             return
 
         logger.debug(f"Found this node: {ast.dump(call_node)}")
