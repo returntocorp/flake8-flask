@@ -79,6 +79,6 @@ class JsonifyVisitor(FlaskBaseVisitor):
         self.report_nodes.append(
             {
                 "node": return_node,
-                "message": f"{self.name} Use `flask.jsonify()` instead of `json.dumps()` when returning JSON from Flask routes. `flask.jsonify()` is a helper method which handles the correct settings for returning JSON objects.",
+                "message": f"{self.name} Use `flask.jsonify()` instead of `json.dumps()` when returning JSON from Flask routes. `flask.jsonify()` is a helper method which handles the correct settings for returning JSON.",
             }
         )
