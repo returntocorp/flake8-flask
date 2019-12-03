@@ -8,6 +8,7 @@ from flake8_flask.send_file_checks import SendFileChecksVisitor
 from flake8_flask.unescaped_template_file_extensions import (
     UnescapedTemplateFileExtensionsVisitor,
 )
+from flake8_flask.use_jsonify import JsonifyVisitor
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -32,6 +33,7 @@ class Flake8Flask:
 
     def run(self):
         visitors = [
+            JsonifyVisitor(),
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
