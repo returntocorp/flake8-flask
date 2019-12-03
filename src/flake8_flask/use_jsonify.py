@@ -47,6 +47,9 @@ class JsonifyVisitor(FlaskBaseVisitor):
                 and call_node.func.value.id == "json"
             ):
                 return True
+        elif isinstance(call_node.func, ast.Name):
+            if self.is_imported("json") and call_node.func.id == "dumps":
+                return True
         return False
 
     def visit_Return(self, return_node: ast.Return):
@@ -76,6 +79,6 @@ class JsonifyVisitor(FlaskBaseVisitor):
         self.report_nodes.append(
             {
                 "node": return_node,
-                "message": f"{self.name} Use `flask.jsonify()` instead of `json.dumps()` when returning JSON from Flask routes. `flask.jsonify()` will set the mimetype correctly.",
+                "message": f"{self.name} Use `flask.jsonify()` instead of `json.dumps()` when returning JSON from Flask routes. `flask.jsonify()` is a helper method which handles the correct settings for returning JSON objects.",
             }
         )

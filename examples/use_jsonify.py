@@ -1,6 +1,4 @@
 import flask
-
-# import jsonify directly
 from flask import Flask, jsonify
 
 app = flask.Flask(__name__)
@@ -28,6 +26,7 @@ def jsonify_user():
     return flask.jsonify(user_dict)
 
 
+# import jsonify directly
 otherapp = Flask(__name__)
 
 
@@ -35,3 +34,11 @@ otherapp = Flask(__name__)
 def otheruser():
     user_dict = get_user(request.args.get("id"))
     return jsonify(user_dict)
+
+
+# False negatives
+@app.route("/user")
+def user():
+    user_dict = get_user(request.args.get("id"))
+    json_response = jsonify(user_dict)
+    return json_response
