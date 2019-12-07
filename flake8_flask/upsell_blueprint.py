@@ -14,53 +14,21 @@ class FlaskMethodVisitor(FlaskBaseVisitor):
     """
 
     def __init__(self):
-        self.flask_alias: str = "flask"
-        self.aliases: Dict[str, str] = {}
         self.app_alias: str = "app"
         super().__init__()
 
-
-
-    def method_names(self) -> Set[str]:
-        pass
-
-    def visit_Import(self, node: ast.Import) -> None:
-        """
-        Visits:
-            import flask
-            import flask as alias
-        """
-        for n in node.names:
-            if n.name == self.flask_alias:
-                self.flask_alias = n.asname or n.name
-
-    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
-        """
-        Visits:
-            from flask import ...
-            from alias import ...
-            from alias import ... as ...
-        """
-        if node.module == self.flask_alias:
-            for n in node.names:
-                if n.name in self.method_names():
-                    self.aliases[n.name] = n.asname or n.name
-
     def visit_Assign(self, node: ast.Assign) -> None:
         if isinstance(node.value, ast.Call):
+            # assume function call Flask() is the app alias
             if self.get_call_func_name(node.value) == "Flask":
                 self.app_alias = node.targets[0].id
 
     def is_method(self, node: ast.Call, name: str):
         if isinstance(node.func, ast.Attribute):
-            # flask module imported
+            # save flask  app initialization as alias
             if isinstance(node.func.value, ast.Name):
                 if node.func.value.id == self.app_alias and node.func.attr == name:
                     return True
-        elif isinstance(node.func, ast.Name) and name in self.aliases:
-            # method imported from flask
-            if node.func.id == self.aliases[name]:
-                return True
         return False
 
     def get_call_keywords(self, d: ast.Call) -> Dict[str, ast.Expr]:
@@ -76,13 +44,8 @@ class FlaskMethodVisitor(FlaskBaseVisitor):
 
 
 class FlaskDecoratorVisitor(FlaskMethodVisitor):
-    METHOD_NAMES: Set[str] = {"route"}
-
     def __init__(self):
         super().__init__()
-
-    def method_names(self) -> Set[str]:
-        return FlaskDecoratorVisitor.METHOD_NAMES.copy()
 
     def is_flask_route(self, d: ast.Call):
         return self.is_method(d, "route")
@@ -103,13 +66,13 @@ class AppRouteVisitor(FlaskDecoratorVisitor):
         verifies the options have default and help text
         """
         for d in self.flask_route_decorators(f):
-            if self.module_has_high_complexity(f):
+            if self.node_has_high_complexity(f):
                 self.report_nodes.append({
                     "node": d,
                     "message": f"{self.name} Consider using Blueprint for modularity. See https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints"
                    })
 
 
-    def module_has_high_complexity(self, f: ast.FunctionDef) -> bool:
+    def node_has_high_complexity(self, f: ast.FunctionDef) -> bool:
         complexity = len(str(ast.dump(f)))
         return complexity > COMPLEXITY_THRESHOLD
