@@ -1,6 +1,6 @@
 from flask import Flask
 
-app = Flask(__name__)
+a = Flask(__name__)
 
 
 @app.route("/")
@@ -9,6 +9,24 @@ def hello():
 
 @app.route("/")
 def hello():
+    # THIS IS A COMPLEX FUNCTION
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    print("dummy")
+    return "Hello World!"
+
+@a.route("/a")
+def foo():
     # THIS IS A COMPLEX FUNCTION
     print("dummy")
     print("dummy")
