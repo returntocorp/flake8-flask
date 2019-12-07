@@ -35,7 +35,11 @@ class FlaskMethodVisitor(FlaskBaseVisitor):
         return dict((keyword.arg, keyword.value) for keyword in d.keywords)
 
     def get_call_func_name(self, d: ast.Call) -> str:
-        return d.func.id
+        if isinstance(d.func, ast.Attribute):
+            return d.func.value.id
+        elif isinstance(d.func, ast.Name):
+            return d.func.id
+        return ""
 
     def get_func_arguments(self, f: ast.FunctionDef) -> List[str]:
         arg_names: List[str] = [arg.arg for arg in f.args.args]
