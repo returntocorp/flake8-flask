@@ -31,7 +31,8 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
             logger.debug(
                 f"{MODULE_NAME} is not imported, any calls to set_cookie probably aren't flask"
             )
-            logger.debug(self.module_imports)
+            logger.debug(self.modules)
+
             return
 
         # and if set_cookie

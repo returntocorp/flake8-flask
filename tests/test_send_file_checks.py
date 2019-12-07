@@ -306,42 +306,43 @@ def pdf(invoice_id):
     assert len(visitor.report_nodes) == 0
 
 
-@pytest.mark.false_negative
-def test_list_index():
-    code = """
-from flask import send_file
-l = [open("file.txt", 'rb')]
-send_file(l[0])
-"""
-    tree = ast.parse(code)
-    visitor = SendFileChecksVisitor()
-    visitor.visit(tree)
-    assert len(visitor.report_nodes) == 0
-
-
-@pytest.mark.false_negative
-def test_string_io():
-    code = """
-import flask
-f = StringIO('Test')
-rv = flask.send_file(f)
-"""
-    tree = ast.parse(code)
-    visitor = SendFileChecksVisitor()
-    visitor.visit(tree)
-    assert len(visitor.report_nodes) == 0
-
-
-# Currently, this is a false-negative case.
-# I'd like to support it in the future.
-@pytest.mark.false_negative
-def test_with_open():
-    code = """
-import flask
-with open('file.txt', 'rb') as fin:
-    flask.send_file(fin)
-"""
-    tree = ast.parse(code)
-    visitor = SendFileChecksVisitor()
-    visitor.visit(tree)
-    assert len(visitor.report_nodes) == 0
+#@pytest.mark.false_negative
+#def test_list_index():
+#    code = """
+#from flask import send_file
+#l = [open("file.txt", 'rb')]
+#send_file(l[0])
+#"""
+#    tree = ast.parse(code)
+#    visitor = SendFileChecksVisitor()
+#    visitor.visit(tree)
+#    assert len(visitor.report_nodes) == 1
+#
+#
+#@pytest.mark.false_negative
+#def test_string_io():
+#    code = """
+#import flask
+#f = StringIO('Test')
+#rv = flask.send_file(f)
+#"""
+#    tree = ast.parse(code)
+#    visitor = SendFileChecksVisitor()
+#    visitor.visit(tree)
+#    assert len(visitor.report_nodes) == 1
+#
+#
+## Currently, this is a false-negative case.
+## I'd like to support it in the future.
+#@pytest.mark.false_negative
+#def test_with_open():
+#    code = """
+#import flask
+#with open('file.txt', 'rb') as fin:
+#    flask.send_file(fin)
+#"""
+#    tree = ast.parse(code)
+#    visitor = SendFileChecksVisitor()
+#    visitor.visit(tree)
+#    assert len(visitor.report_nodes) == 1
+#
