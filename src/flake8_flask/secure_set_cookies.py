@@ -1,8 +1,9 @@
 import ast
 import logging
 import sys
-from flake8_flask.flask_base_visitor import FlaskBaseVisitor
+
 from flake8_flask.constants import MODULE_NAME
+from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -14,7 +15,7 @@ logger.addHandler(handler)
 
 
 class SecureSetCookiesVisitor(FlaskBaseVisitor):
-    name = "r2c-secure-set-cookie"
+    name = "r2c-flask-secure-set-cookie"
 
     def _is_set_cookie(self, call_node):
         if (
@@ -31,6 +32,7 @@ class SecureSetCookiesVisitor(FlaskBaseVisitor):
                 f"{MODULE_NAME} is not imported, any calls to set_cookie probably aren't flask"
             )
             logger.debug(self.modules)
+
             return
 
         # and if set_cookie

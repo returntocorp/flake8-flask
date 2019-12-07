@@ -14,7 +14,7 @@ logger.addHandler(handler)
 
 
 class SendFileChecksVisitor(FlaskBaseVisitor):
-    name = "r2c-need-filename-or-mimetype-for-file-objects-in-send-file"
+    name = "r2c-flask-send-file-open"
 
     def _is_os_path_join(self, call_node):
         # This makes me sad but it'll work.
