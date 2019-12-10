@@ -36,7 +36,11 @@ class FlaskMethodVisitor(FlaskBaseVisitor):
 
     def get_call_func_name(self, d: ast.Call) -> str:
         if isinstance(d.func, ast.Attribute):
-            return d.func.value.id
+            if isinstance(d.func.value, ast.Name):
+                return d.func.value.id
+            elif isinstance(d.func.value, ast.Str):
+                return d.func.value.s
+            return ""
         elif isinstance(d.func, ast.Name):
             return d.func.id
         return ""
