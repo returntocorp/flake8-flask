@@ -26,11 +26,11 @@ class Flake8Flask:
 
     def __init__(self, tree, add_parents=True):
         self.tree = tree
-        # Add in parent nodes to tree
-        if add_parents:
-            for node in ast.walk(self.tree):
-                for child in ast.iter_child_nodes(node):
-                    child.parent = node
+        # # Add in parent nodes to tree
+        # if add_parents:
+        #     for node in ast.walk(self.tree):
+        #         for child in ast.iter_child_nodes(node):
+        #             child.parent = node
 
     def run(self):
         visitors = [
@@ -38,7 +38,6 @@ class Flake8Flask:
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
-            AppRouteVisitor(),
         ]
         for visitor in visitors:
             visitor.visit(self.tree)
