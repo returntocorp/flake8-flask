@@ -1,13 +1,14 @@
 import ast
 import logging
+import os
+from collections import defaultdict
 from flake8_flask.flask_base_visitor import FlaskBaseVisitor
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
 
 
 logger = logging.getLogger(__file__)
-# Note that this is not cyclomatic complexity
-# Complexity is defined as the string length of the code
-COMPLEXITY_THRESHOLD = 500
+ROUTE_COUNTER_THRESHOLD = 3
+
 class FlaskMethodVisitor(FlaskBaseVisitor):
     """
     Abstract visitor that visits Flask calls
@@ -64,9 +65,26 @@ class FlaskDecoratorVisitor(FlaskMethodVisitor):
                 continue
             elif self.is_flask_route(decorator):
                 yield decorator
-
+    def get_route_from_decorator(self, decorator):
+        if not isinstance(decorator, ast.Call):
+            return
+        if not decorator.args:
+            return
+        # URL is the first argument
+        route_arg = decorator.args[0]
+        if isinstance(route_arg, ast.Str):
+            return route_arg.s
+        else:
+            return
 class AppRouteVisitor(FlaskDecoratorVisitor):
     name = "r2c-flask-use-blueprint-for-modularity"
+    # each flask app has a counter
+    route_counter: Dict[str, Dict[str, int]] = {}
+
+    def __init__(self, filename: str):
+        self.filename = filename
+        self.route_counter[filename] = defaultdict(int)
+        super().__init__()
 
     def visit_FunctionDef(self, f: ast.FunctionDef) -> None:
         """
@@ -74,13 +92,20 @@ class AppRouteVisitor(FlaskDecoratorVisitor):
         verifies the options have default and help text
         """
         for d in self.flask_route_decorators(f):
-            if self.node_has_high_complexity(f):
+            route = self.get_route_from_decorator(d)
+            self.route_counter[self.filename][route] += 1
+            route_prefix = os.path.split(route)[0]
+            if self.route_occurs_often(route_prefix):
                 self.report_nodes.append({
                     "node": d,
-                    "message": f"{self.name} Consider using Blueprint for modularity. See https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints"
+                    "message": f"{self.name} Consider using Blueprint for routes with `{route_prefix}`. Blueprint make applications modular and simple. See https://flask.palletsprojects.com/en/1.1.x/blueprints/#blueprints"
                    })
 
-
-    def node_has_high_complexity(self, f: ast.FunctionDef) -> bool:
-        complexity = len(str(ast.dump(f)))
-        return complexity > COMPLEXITY_THRESHOLD
+    def route_occurs_often(self, route_prefix: str) -> bool:
+        if route_prefix == '/':
+            return False
+        counter = 0
+        for k, v in self.route_counter[self.filename].items():
+            if k.startswith(route_prefix):
+                counter += v
+        return counter >= ROUTE_COUNTER_THRESHOLD

@@ -1,47 +1,17 @@
 from flask import Flask
 
-a = Flask(__name__)
+app = Flask(__name__)
 
+@app.route("/user")
+def user():
+    return
+@app.route("/user/a")
+def user_a():
+    return
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-@app.route("/")
-def hello():
-    # THIS IS A COMPLEX FUNCTION
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    return "Hello World!"
-
-@a.route("/a")
-def foo():
-    # THIS IS A COMPLEX FUNCTION
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    print("dummy")
-    return "Hello World!"
+@app.route("/user/b")
+def user_b():
+    return
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -24,8 +24,9 @@ class Flake8Flask:
     name = "flake8-flask"
     version = __version__
 
-    def __init__(self, tree, add_parents=True):
+    def __init__(self, tree, filename, add_parents=True):
         self.tree = tree
+        self.filename = filename
         # # Add in parent nodes to tree
         # if add_parents:
         #     for node in ast.walk(self.tree):
@@ -38,6 +39,7 @@ class Flake8Flask:
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
+            AppRouteVisitor(self.filename)
         ]
         for visitor in visitors:
             visitor.visit(self.tree)
