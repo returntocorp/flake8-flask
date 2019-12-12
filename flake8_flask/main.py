@@ -28,10 +28,10 @@ class Flake8Flask:
         self.tree = tree
         self.filename = filename
         # # Add in parent nodes to tree
-        # if add_parents:
-        #     for node in ast.walk(self.tree):
-        #         for child in ast.iter_child_nodes(node):
-        #             child.parent = node
+        if add_parents:
+            for node in ast.walk(self.tree):
+                for child in ast.iter_child_nodes(node):
+                    child.r2c_parent = node
 
     def run(self):
         visitors = [
