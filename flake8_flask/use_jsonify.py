@@ -25,7 +25,7 @@ class JsonifyVisitor(FlaskBaseVisitor):
     ) -> Optional[ast.FunctionDef]:
         cursor = return_node
         while not isinstance(cursor, ast.Module):
-            cursor = cursor.parent
+            cursor = cursor.r2c_parent
             if isinstance(cursor, ast.FunctionDef):
                 return cursor
         return None

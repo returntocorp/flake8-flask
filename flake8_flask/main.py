@@ -9,6 +9,7 @@ from flake8_flask.unescaped_template_file_extensions import (
     UnescapedTemplateFileExtensionsVisitor,
 )
 from flake8_flask.use_jsonify import JsonifyVisitor
+from flake8_flask.upsell_blueprint import AppRouteVisitor
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.INFO)
@@ -23,13 +24,14 @@ class Flake8Flask:
     name = "flake8-flask"
     version = __version__
 
-    def __init__(self, tree, add_parents=True):
+    def __init__(self, tree, filename, add_parents=True):
         self.tree = tree
-        # Add in parent nodes to tree
+        self.filename = filename
+        # # Add in parent nodes to tree
         if add_parents:
             for node in ast.walk(self.tree):
                 for child in ast.iter_child_nodes(node):
-                    child.parent = node
+                    child.r2c_parent = node
 
     def run(self):
         visitors = [
@@ -37,10 +39,10 @@ class Flake8Flask:
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
+            AppRouteVisitor(self.filename)
         ]
         for visitor in visitors:
             visitor.visit(self.tree)
-
             for report in visitor.report_nodes:
                 node = report["node"]
                 message = report["message"]
