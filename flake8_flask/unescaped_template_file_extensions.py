@@ -65,9 +65,9 @@ class UnescapedTemplateFileExtensionsVisitor(FlaskBaseVisitor):
         this behavior, and if the template is rendered as "text/plain"
         we assume it is safe.
         """
-        if isinstance(call_node.parent, ast.Tuple):
-            if isinstance(call_node.parent.parent, ast.Return):
-                return_value_tuple_node = call_node.parent
+        if isinstance(call_node.r2c_parent, ast.Tuple):
+            if isinstance(call_node.r2c_parent.r2c_parent, ast.Return):
+                return_value_tuple_node = call_node.r2c_parent
                 headers_dict_node = return_value_tuple_node.elts[2]
                 for i, key in enumerate(headers_dict_node.keys):
                     if isinstance(key, ast.Str) and key.s.lower() == "content-type":
