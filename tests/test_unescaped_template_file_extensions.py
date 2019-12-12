@@ -3,10 +3,7 @@ import logging
 
 import pytest
 from flake8_flask.unescaped_template_file_extensions import (
-    UnescapedTemplateFileExtensionsVisitor,
-    escaped_extensions,
-    logger,
-)
+    UnescapedTemplateFileExtensionsVisitor, escaped_extensions, logger)
 
 logger.setLevel(logging.DEBUG)
 
@@ -15,7 +12,7 @@ def check_code(code):
     tree = ast.parse(code)
     for node in ast.walk(tree):
         for child in ast.iter_child_nodes(node):
-            child.parent = node
+            child.r2c_parent = node
     visitor = UnescapedTemplateFileExtensionsVisitor()
     visitor.visit(tree)
     return visitor.report_nodes

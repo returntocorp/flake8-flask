@@ -1,4 +1,5 @@
 import ast
+
 import pytest
 from flake8_flask.use_jsonify import JsonifyVisitor
 
@@ -7,7 +8,7 @@ def check_code(code):
     tree = ast.parse(code)
     for node in ast.walk(tree):
         for child in ast.iter_child_nodes(node):
-            child.parent = node
+            child.r2c_parent = node
     visitor = JsonifyVisitor()
     visitor.visit(tree)
     return visitor.report_nodes
