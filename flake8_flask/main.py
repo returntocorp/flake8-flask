@@ -32,11 +32,11 @@ class Flake8Flask:
         if add_parents:
             for node in ast.walk(self.tree):
                 for child in ast.iter_child_nodes(node):
-                    child_to_parent[child] = node
+                    self.child_to_parent[child] = node
 
     def run(self):
         visitors = [
-            JsonifyVisitor(child_to_parent),
+            JsonifyVisitor(self.child_to_parent),
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
