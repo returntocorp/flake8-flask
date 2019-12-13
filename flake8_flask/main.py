@@ -23,6 +23,7 @@ logger.addHandler(handler)
 class Flake8Flask:
     name = "flake8-flask"
     version = __version__
+    child_to_parent = {}
 
     def __init__(self, tree, filename, add_parents=True):
         self.tree = tree
@@ -31,11 +32,11 @@ class Flake8Flask:
         if add_parents:
             for node in ast.walk(self.tree):
                 for child in ast.iter_child_nodes(node):
-                    child.r2c_parent = node
+                    self.child_to_parent[child] = node
 
     def run(self):
         visitors = [
-            JsonifyVisitor(),
+            JsonifyVisitor(self.child_to_parent),
             SendFileChecksVisitor(),
             SecureSetCookiesVisitor(),
             UnescapedTemplateFileExtensionsVisitor(),
@@ -52,28 +53,3 @@ class Flake8Flask:
                     message,
                     visitor.__class__.__name__,
                 )
-
-
-if __name__ == "__main__":
-    import argparse
-
-    logger.setLevel(logging.DEBUG)
-
-    parser = argparse.ArgumentParser()
-    # Add arguments here
-    parser.add_argument("inputfile")
-
-    args = parser.parse_args()
-
-    logger.info(f"Parsing {args.inputfile}")
-    with open(args.inputfile, "r") as fin:
-        data = fin.read()
-    tree = ast.parse(data)
-    lines = data.split("\n")
-
-    flake8flask = Flake8Flask(tree)
-
-    print("*** Hits:")
-    results = flake8flask.run()
-    for report in results:
-        print(report)

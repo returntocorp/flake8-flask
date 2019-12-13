@@ -2,14 +2,11 @@ import ast
 
 import pytest
 
-from flake8_flask.import_aliasing import MethodVisitor 
+from flake8_flask.import_aliasing import MethodVisitor
 
 
 def check_code(code):
     tree = ast.parse(code)
-    for node in ast.walk(tree):
-        for child in ast.iter_child_nodes(node):
-            child.parent = node
     visitor = MethodVisitor()
     visitor.visit(tree)
     return visitor
