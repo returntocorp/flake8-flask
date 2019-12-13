@@ -5,9 +5,6 @@ from flake8_flask.upsell_blueprint import AppRouteVisitor
 
 def check_code(code):
     tree = ast.parse(code)
-    for node in ast.walk(tree):
-        for child in ast.iter_child_nodes(node):
-            child.parent = node
     visitor = AppRouteVisitor(__file__)
     visitor.visit(tree)
     return visitor.report_nodes

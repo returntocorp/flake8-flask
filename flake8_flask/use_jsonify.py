@@ -20,12 +20,16 @@ JSON_MODULE_NAME = "json"
 class JsonifyVisitor(FlaskBaseVisitor):
     name = "r2c-flask-use-jsonify"
 
+    def __init__(self, child_to_parent):
+        self.child_to_parent = child_to_parent
+        super(JsonifyVisitor, self).__init__()
+
     def _get_function_def_node(
         self, return_node: ast.Return
     ) -> Optional[ast.FunctionDef]:
         cursor = return_node
         while not isinstance(cursor, ast.Module):
-            cursor = cursor.r2c_parent
+            cursor = self.child_to_parent.get(cursor, None)
             if isinstance(cursor, ast.FunctionDef):
                 return cursor
         return None

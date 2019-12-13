@@ -10,9 +10,6 @@ logger.setLevel(logging.DEBUG)
 
 def check_code(code):
     tree = ast.parse(code)
-    for node in ast.walk(tree):
-        for child in ast.iter_child_nodes(node):
-            child.r2c_parent = node
     visitor = UnescapedTemplateFileExtensionsVisitor()
     visitor.visit(tree)
     return visitor.report_nodes
@@ -152,10 +149,7 @@ def opml():
 """
     )
     tree = ast.parse(code)
-    for node in ast.walk(tree):
-        for child in ast.iter_child_nodes(node):
-            child.parent = node
-    visitor = UnescapedTemplateFileExtensionsVisitor(include_edge_cases=True)
+    visitor = UnescapedTemplateFileExtensionsVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
@@ -267,10 +261,7 @@ def opml():
 """
     )
     tree = ast.parse(code)
-    for node in ast.walk(tree):
-        for child in ast.iter_child_nodes(node):
-            child.parent = node
-    visitor = UnescapedTemplateFileExtensionsVisitor(include_edge_cases=False)
+    visitor = UnescapedTemplateFileExtensionsVisitor()
     visitor.visit(tree)
     assert len(visitor.report_nodes) == 0
 
